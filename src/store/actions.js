@@ -1,15 +1,26 @@
-import defaultState from './state'
+import axios from "axios";
 
-export const resetState = (context) => context.commit('setState', defaultState())
+export const saveToken = (context, token) => context.commit('saveToken', token)
 
-export const createElement = (context, elementName) => context.commit('createElement', elementName)
+export const loadToken = (context) => context.commit('loadToken')
 
-export const createElementAuto = (context) => context.commit('createElementAuto')
+export const logout = (context) => context.commit('logout')
 
-export const createBuild = (context, buildName) => context.commit('createBuild', buildName)
+export const getMe = async (context) => {
+    const token = context.getters.getToken
 
-export const buyUpgrade = (context, upgradeName) => context.commit('buyUpgrade', upgradeName)
+    await new Promise(resolve => setTimeout(resolve, 3000))
 
-export const verifyHighestAmount = (context) => context.commit('verifyHighestAmount')
+    try {
+        const response = await axios
+            .get("/me", {
+                headers: { Authorization: `Bearer ${token}` },
+            })
 
-export const ascend = (context) => context.commit('ascend')
+        return response.data
+    } catch (e) {
+        console.log(e)
+    }
+
+}
+

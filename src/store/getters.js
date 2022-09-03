@@ -1,15 +1,10 @@
-export const getElements = (state) => state.elements
+export const getToken = (state) => state.token
 
-export const getBuilds = (state) => state.builds
-
-export const getUpgrades = (state) => state.upgrades
-
-export const getPrestige = (state) => state.prestige
-
-export const getElementsPerSecond = (state) => {
-    let elementsPerSecond = {}
-    for (const key in state.elements) {
-        elementsPerSecond[key] = state.elements[key].amountPerSecond * state.elements[key].perSecondBooster * state.prestige.level
+export const hasPlayerLoggedIn = (state) => {
+    if (state.token) {
+        return true
+    } else {
+        return false
     }
-    return elementsPerSecond
+
 }
