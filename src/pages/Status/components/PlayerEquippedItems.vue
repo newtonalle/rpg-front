@@ -3,22 +3,24 @@
     <v-card-title>Equipped Items</v-card-title>
     <v-card-text>
       <h5 v-if="player.equipments.length <= 0">No items equipped</h5>
-      <div
-        v-for="(item, index) in player.equipments"
-        :key="`${item.id}-${index}`"
-      >
-        <h5>Name: {{ item.name }}</h5>
-        <p>+{{ item.strength }} Strength</p>
-        <p>+{{ item.dexterity }} Dexterity</p>
-        <p>+{{ item.intelligence }} Intelligence</p>
-      </div>
+      <v-row>
+        <v-col
+          v-for="(item, index) in player.equipments"
+          :key="`${item.id}-${index}`"
+          cols="12"
+        >
+          <player-inventory-item :item="item" />
+        </v-col>
+      </v-row>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import PlayerInventoryItem from "./PlayerInventoryItem.vue";
 export default {
-  name: "PlayerEquippedItems",
+  components: { PlayerInventoryItem },
+  name: "PlayerInventoryItems",
   props: {
     player: {
       required: true,

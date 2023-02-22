@@ -1,3 +1,7 @@
 export default () => ({
-    token: ''
+    token: '',
+    player: { inventory: [], equipments: [] },
+    battles: [],
+    currentBattle: {},
+    monsters: []
 })

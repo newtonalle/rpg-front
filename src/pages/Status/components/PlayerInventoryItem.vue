@@ -5,63 +5,73 @@
         :elevation="attrs['aria-expanded'] === 'true' ? 6 : 2"
         v-bind="attrs"
         v-on="on"
-        @dblclick="equip"
+        @dblclick="toggleEquip"
         class="inventory-item"
+        :color="cardColor"
       >
-        <v-card-text>
-          <span style="font-weight: bold">{{ item.name }}</span>
-        </v-card-text>
+        <v-progress-circular
+          v-if="loading"
+          indeterminate
+          color="green"
+        ></v-progress-circular>
+        <div v-else>
+          <v-card-text>
+            <span style="font-weight: bold">{{ item.name }}</span>
+          </v-card-text>
+        </div>
       </v-card>
     </template>
-    <v-card width="300px">
-      <v-card-title>{{ item.name }}</v-card-title>
-      <v-card-text>
-        <v-row>
-          <v-col cols="4"> +{{ item.itemStrength }}🗡️ </v-col>
-          <v-col cols="4"> +{{ item.itemDexterity }}✋ </v-col>
-          <v-col cols="4"> +{{ item.itemIntelligence }}🧠 </v-col>
-        </v-row>
-        <v-row
-          v-if="
-            item.requiredStrength ||
-            item.requiredStrength ||
-            item.requiredStrength
-          "
-        >
-          <v-col>
-            <span>Requirements</span>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="4" v-if="item.requiredStrength">
-            {{ item.requiredStrength }}🗡️
-          </v-col>
-          <v-col cols="4" v-if="item.requiredStrength">
-            {{ item.requiredDexterity }}✋
-          </v-col>
-          <v-col cols="4" v-if="item.requiredStrength">
-            {{ item.requiredIntelligence }}🧠
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+    <player-inventory-item-expanded :item="item" />
   </v-tooltip>
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
+import axios from "axios";
+import PlayerInventoryItemExpanded from "./PlayerInventoryItemExpanded.vue";
 export default {
+  components: { PlayerInventoryItemExpanded },
   name: "PlayerInventoryItem",
+  data: () => ({ loading: false }),
   props: {
     item: {
       required: true,
     },
   },
-  data: () => ({
-    hovering: false,
-  }),
+
+  computed: {
+    ...mapState(["player"]),
+
+    cardColor() {
+      let color = "green lighten-5";
+      if (
+        this.item.requiredStrength > this.player.totalStrength ||
+        this.item.requiredDexterity > this.player.totalDexterity ||
+        this.item.requiredIntelligence > this.player.totalIntelligence
+      ) {
+        color = "red lighten-2";
+      }
+
+      return color;
+    },
+  },
+
   methods: {
-    equip() {
-      console.log("Equip");
+    ...mapActions(["getMe"]),
+    async toggleEquip() {
+      if (this.loading) return;
+      this.loading = true;
+      await axios
+        .put(`/players/inventory/${this.item.id}`)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$emit("showSnackbar");
+        });
+      await this.getMe();
+      this.loading = false;
     },
   },
 };

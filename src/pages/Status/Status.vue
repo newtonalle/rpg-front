@@ -17,20 +17,28 @@
           </v-row>
         </v-col>
         <v-col cols="4">
-          <player-inventory :player="player" />
+          <player-inventory :player="player" @showSnackbar="snackbar = true" />
         </v-col>
       </v-row>
     </div>
+    <v-snackbar v-model="snackbar">
+      Unable to equip item, lacking requirements!
+      <template v-slot:action="{ attrs }">
+        <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import PlayerCard from "./components/PlayerCard.vue";
 import PlayerInventory from "./components/PlayerInventory.vue";
 import PlayerEquippedItems from "./components/PlayerEquippedItems.vue";
 export default {
-  data: () => ({ loading: false, player: { inventory: [], equipments: [] } }),
+  data: () => ({ loading: false, snackbar: false }),
 
   methods: {
     ...mapActions(["getMe"]),
@@ -42,9 +50,13 @@ export default {
     PlayerEquippedItems,
   },
 
+  computed: {
+    ...mapState(["player"]),
+  },
+
   async mounted() {
     this.loading = true;
-    this.player = await this.getMe();
+    await this.getMe();
     this.loading = false;
   },
 };

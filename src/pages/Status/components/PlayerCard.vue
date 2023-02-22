@@ -1,6 +1,10 @@
 <template>
   <v-card>
-    <v-card-title>"{{ player.name }}" the {{ player.class }}</v-card-title>
+    <v-card-title
+      >"{{ player.name }}", Level {{ player.level }} {{ player.class }} ({{
+        player.experience
+      }}xp)</v-card-title
+    >
     <v-card-text>
       <p>Email: {{ player.email }}</p>
       <v-row>

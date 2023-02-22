@@ -9,7 +9,7 @@
           :key="`${item.id}-${index}`"
           cols="4"
         >
-          <player-inventory-item :item="item" />
+          <player-inventory-item :item="item" @showSnackbar="showSnackbar" />
         </v-col>
       </v-row>
     </v-card-text>
@@ -27,6 +27,11 @@ export default {
     },
     loading: {
       default: false,
+    },
+  },
+  methods: {
+    showSnackbar() {
+      this.$emit("showSnackbar");
     },
   },
 };
