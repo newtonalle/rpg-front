@@ -70,7 +70,7 @@ export default {
           { headers: { "Access-Control-Allow-Origin": "*" } }
         )
         .then((response) => {
-          console.log(response);
+          console.log("token at login", response);
           this.$store.dispatch("saveToken", response.data.token);
           this.loading = false;
           this.$router.push({ name: "home" });

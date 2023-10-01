@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <v-card style="cursor: pointer;" :color="cardColor" :elevation="isHovering ? 24 : 6" @mouseover="isHovering = true"
+    @mouseleave="isHovering = false">
     <v-card-title>
-      {{ monster.name }}
+      {{ monster.name }} the {{ monster.type }}
     </v-card-title>
     <v-card-text>
       <v-row>
@@ -23,11 +24,14 @@
         </v-col>
       </v-row>
     </v-card-text>
-  </div>
+  </v-card>
 </template>
 
 <script>
 export default {
-  props: { monster: Object },
+  data: () => ({
+    isHovering: false
+  }),
+  props: { monster: Object, cardColor: String },
 };
 </script>

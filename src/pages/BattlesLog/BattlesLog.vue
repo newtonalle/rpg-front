@@ -3,6 +3,9 @@
     <v-skeleton-loader v-if="loading" type="card-avatar, article, actions">
     </v-skeleton-loader>
     <div v-else>
+      <div v-if="battles.length === 0">
+        <p>You have not participated in any battles...</p>
+      </div>
       <v-row
         v-for="(battle, index) in battles"
         justify="center"
@@ -24,7 +27,7 @@ export default {
     BattleCard,
   },
 
-  data: () => ({ loading: false, snackbar: false }),
+  data: () => ({ loading: false }),
 
   methods: {
     ...mapActions(["getBattles"]),

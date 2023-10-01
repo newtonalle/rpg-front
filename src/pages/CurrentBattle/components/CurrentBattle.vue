@@ -54,6 +54,15 @@
         <v-data-table :headers="headers" :items="items" />
       </v-container>
     </div>
+    <!-- <v-snackbar v-model="snackbar">
+      You WIN!
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="lime" text v-bind="attrs" @click="snackbar = false">
+          Go Home
+        </v-btn>
+      </template>
+    </v-snackbar> -->
   </div>
 </template>
 
@@ -68,6 +77,7 @@ export default {
 
   data: () => ({
     loading: false,
+    snackbar: true
   }),
 
   computed: {

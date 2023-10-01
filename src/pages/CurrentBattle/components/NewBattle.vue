@@ -17,7 +17,7 @@
               >Choose Monster</v-stepper-step
             >
             <v-divider></v-divider>
-            <v-stepper-step step="3"> Confirm battle </v-stepper-step>
+            <v-stepper-step step="3"> Choose Equipment </v-stepper-step>
           </v-stepper-header>
           <v-stepper-items>
             <!-- step 1 -->
@@ -25,7 +25,7 @@
               <v-container class="battle-container">
                 <v-row style="height: 100%">
                   <v-col align-self="center">
-                    <v-btn @click="createNewMonsters()">New Battle</v-btn>
+                    <v-btn @click="newPreBattleProcess()">New Battle</v-btn>
                   </v-col>
                 </v-row>
               </v-container>
@@ -34,24 +34,35 @@
             <!-- step 2 -->
             <v-stepper-content step="2">
               <v-container class="battle-container">
-                <v-row style="height: 100%">
-                  <v-col
-                    v-for="(monster, index) in monsters"
-                    align-self="center"
-                    cols="4"
-                    :key="`monster-${index}`"
+                <v-row
+                  style="height: 33%"
+                  v-for="(monster, index) in currentPreBattle.monster"
+                  :key="`monster-${index}`"
+                >
+                  <v-col cols="4">
+                    <player-card
+                      v-if="index === 1"
+                      :player="player"
+                    ></player-card>
+                  </v-col>
+                  <v-col @click="confirmMonster" align-self="center" cols="4"
+                    ><v-btn
+                      color="primary"
+                      :disabled="!selectedMonster.id"
+                      v-if="index === 1"
+                      >Choose Monster</v-btn
+                    ></v-col
                   >
-                    <v-card style="height: 100%">
-                      <monster-card :monster="monster" />
-                      <v-card-actions>
-                        <v-btn
-                          block
-                          color="primary"
-                          @click="selectMonster(monster)"
-                          >Choose Monster</v-btn
-                        >
-                      </v-card-actions>
-                    </v-card>
+                  <v-col
+                    cols="4"
+                    v-on:dblclick="confirmMonster"
+                    @click="selectMonster(monster)"
+                  >
+                    <monster-card
+                      style="height: 100%"
+                      :monster="monster"
+                      :cardColor="`${cardSelected(monster)}`"
+                    />
                   </v-col>
                 </v-row>
               </v-container>
@@ -60,51 +71,21 @@
             <!-- step 3 -->
             <v-stepper-content step="3">
               <v-container class="battle-container">
-                <v-row style="height: 100%">
-                  <v-col align-self="center" cols="4">
-                    <v-card style="height: 100%">
-                      <v-card-title
-                        >"{{ player.name }}" the {{ player.class }} (Lvl.
-                        {{ player.level }})</v-card-title
-                      >
-                      <v-card-text>
-                        <v-row>
-                          <v-col>
-                            {{ player.currentHealth }}/{{ player.maxHealth }} ❤️
-                            <br />
-                            <br />
-                            {{ player.currentMana }}/{{ player.maxMana }} ✨
-                            <br />
-                          </v-col>
-
-                          <v-col>
-                            {{ player.totalStrength }} 🗡️
-                            <br />
-                            {{ player.totalDexterity }} ✋
-                            <br />
-                            {{ player.totalIntelligence }} 🧠
-                            <br />
-                          </v-col>
-                        </v-row>
-                      </v-card-text>
-                    </v-card>
-                  </v-col>
-                  <v-col align-self="center" cols="4">
-                    <v-row><v-col>VS</v-col></v-row>
-                    <v-row
-                      ><v-col
-                        ><v-btn color="primary" @click="createNewBattle"
-                          >FIGHT!</v-btn
-                        ></v-col
-                      ></v-row
+                <v-row>
+                  <v-col>
+                    <v-btn block color="secondary" @click="reselectMonster"
+                      >Choose another monster</v-btn
                     >
                   </v-col>
-                  <v-col align-self="center" cols="4">
-                    <v-card style="height: 100%">
-                      <monster-card :monster="selectedMonster" />
-                    </v-card>
+                  <v-col>
+                    <v-btn color="primary" block @click="createNewBattle"
+                      >Start battle</v-btn
+                    >
                   </v-col>
                 </v-row>
+                <br />
+                <br />
+                <player-status :player="player" />
               </v-container>
             </v-stepper-content>
           </v-stepper-items>
@@ -116,6 +97,8 @@
 
 <script>
 import MonsterCard from "./MonsterCard.vue";
+import PlayerStatus from "../../../components/PlayerStatus/PlayerStatus.vue";
+import PlayerCard from "../../../components/PlayerStatus/components/PlayerCard.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
@@ -125,20 +108,46 @@ export default {
     selectedMonster: {},
   }),
 
+  props: { currentPreBattle: Object },
+
   computed: {
     ...mapState(["player", "monsters"]),
   },
 
-  components: { MonsterCard },
+  components: { MonsterCard, PlayerStatus, PlayerCard },
 
   methods: {
-    ...mapActions(["getMe", "getMonsters", "createMonsters", "newBattle"]),
+    ...mapActions([
+      "getMe",
+      "getCurrentPlayer",
+      "getMonsters",
+      "createMonsters",
+      "newBattle",
+      "preBattleProcess",
+    ]),
+
+    cardSelected(monster) {
+      if (this.selectedMonster.id === monster.id) {
+        return "accent";
+      }
+      return "";
+    },
 
     async createNewMonsters() {
       if (this.loading) return;
       this.loading = true;
       await this.createMonsters();
       await this.getMonsters();
+      this.loading = false;
+
+      this.newBattleStep = 2;
+    },
+
+    async newPreBattleProcess() {
+      if (this.loading) return;
+      this.loading = true;
+      await this.preBattleProcess();
+      this.$emit("update");
       this.loading = false;
 
       this.newBattleStep = 2;
@@ -154,13 +163,24 @@ export default {
 
     selectMonster(monster) {
       this.selectedMonster = monster;
+    },
+
+    confirmMonster() {
       this.newBattleStep = 3;
+    },
+
+    reselectMonster() {
+      this.newBattleStep = 2;
     },
   },
 
   async mounted() {
     this.loading = true;
+    if (this.currentPreBattle.monster) {
+      this.newBattleStep = 2;
+    }
     await this.getMe();
+    await this.getCurrentPlayer();
     await this.getMonsters();
     this.loading = false;
   },
@@ -171,8 +191,9 @@ export default {
 .new-battle-stepper-container {
   width: 80%;
 }
+
 .battle-container {
-  height: 500px;
+  height: 650px;
   background-color: #ededed;
 }
 </style>

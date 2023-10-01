@@ -1,8 +1,8 @@
 <template>
-  <v-card @click="redirect">
-    <v-card-title>Batalha #{{ battle.id }}</v-card-title>
-    <v-card-text
-      >Winner: {{ battleWinner }}
+  <v-card style="cursor: pointer;" :elevation="isHovering ? 24 : 6" @mouseover="isHovering = true"
+    @mouseleave="isHovering = false" @click="redirect">
+    <v-card-title>Battle #{{ battle.id }}</v-card-title>
+    <v-card-text>Winner: {{ battleWinner }}
       <br />
       Monster: {{ battle.monster.name }} the
       {{ battle.monster.type }}
@@ -14,6 +14,11 @@
 
 <script>
 export default {
+
+  data: () => ({
+    isHovering: false
+  }),
+
   props: {
     battle: {
       type: Object,

@@ -19,9 +19,9 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
 
   console.log('Routing')
-  console.log(store.getters.hasPlayerLoggedIn)
+  console.log(store.getters.hasUserLoggedIn)
 
-  if (!store.getters.hasPlayerLoggedIn && to.meta.requiresLoggedPlayer) { next({ name: 'login' }) }
+  if (!store.getters.hasUserLoggedIn && to.meta.requiresLoggedUser) { next({ name: 'login' }) }
   else {
     next()
   }
