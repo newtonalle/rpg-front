@@ -7,15 +7,10 @@
         }}xp)</span
       ></v-card-title
     >
+    <br />
     <v-card-text>
       <v-row>
-        <v-col>
-          {{ player.currentHealth }}/{{ player.maxHealth }} ❤️
-          <br />
-          <br />
-          {{ player.currentMana }}/{{ player.maxMana }} ✨
-          <br />
-        </v-col>
+        <v-col> {{ player.gold }}🪙 </v-col>
         <v-col>
           <player-attributes
             :baseAttribute="player.attributeStrength"
@@ -32,6 +27,12 @@
             >
             <span>+{{ addedAttributes.attributeStrength }}</span>
           </div>
+        </v-col>
+      </v-row>
+      <br />
+      <v-row>
+        <v-col> {{ player.currentHealth }}/{{ player.maxHealth }} ❤️ </v-col>
+        <v-col>
           <player-attributes
             :baseAttribute="player.attributeDexterity"
             :extraAttribute="player.extraDexterity"
@@ -47,6 +48,12 @@
             >
             <span>+{{ addedAttributes.attributeDexterity }}</span>
           </div>
+        </v-col>
+      </v-row>
+      <br />
+      <v-row>
+        <v-col>{{ player.currentMana }}/{{ player.maxMana }} ✨ </v-col>
+        <v-col>
           <player-attributes
             :baseAttribute="player.attributeIntelligence"
             :extraAttribute="player.extraIntelligence"
@@ -61,25 +68,27 @@
               >+</v-btn
             >
             <span>+{{ addedAttributes.attributeIntelligence }}</span>
-          </div>
-        </v-col>
-      </v-row>
-      <br />
-      <br />
-      <v-btn
-        :disabled="player.unallocatedAttributePoints <= 0"
-        v-if="!attributeMenuActive"
-        color="primary"
-        @click="startAttributeAdding"
-        >Add Attributes ({{ player.unallocatedAttributePoints }} APS)</v-btn
-      >
-      <div v-if="attributeMenuActive">
-        <v-btn color="primary" @click="confirmAddedAttributes">Save</v-btn>
-        <br />
-        <br />
-        <v-btn color="secondary" @click="attributeMenuActive = false"
-          >Cancel</v-btn
+          </div></v-col
         >
+      </v-row>
+      <div v-if="showAttributeAdding">
+        <br />
+        <br />
+        <v-btn
+          :disabled="player.unallocatedAttributePoints <= 0"
+          v-if="!attributeMenuActive"
+          color="primary"
+          @click="startAttributeAdding"
+          >Add Attributes ({{ player.unallocatedAttributePoints }} APS)</v-btn
+        >
+        <div v-if="attributeMenuActive">
+          <v-btn color="primary" @click="confirmAddedAttributes">Save</v-btn>
+          <br />
+          <br />
+          <v-btn color="secondary" @click="attributeMenuActive = false"
+            >Cancel</v-btn
+          >
+        </div>
       </div>
     </v-card-text>
   </v-card>
@@ -133,6 +142,9 @@ export default {
     },
     loading: {
       default: false,
+    },
+    showAttributeAdding: {
+      default: true,
     },
   },
 };

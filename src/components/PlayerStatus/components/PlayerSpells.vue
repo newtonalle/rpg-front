@@ -17,6 +17,7 @@
                 cols="6"
               >
                 <v-btn
+                  :loading="spellLoading"
                   color="primary"
                   block
                   :disabled="
@@ -58,7 +59,7 @@ import PlayerSpell from "./PlayerSpell.vue";
 export default {
   name: "PlayerSpells",
 
-  data: () => ({ dialog: false }),
+  data: () => ({ dialog: false, spellLoading: false }),
 
   components: {
     PlayerSpell,
@@ -84,6 +85,7 @@ export default {
     },
 
     async learnSpell(spellId) {
+      this.spellLoading = true;
       await axios
         .post(`/players/${this.player.id}/spells/${spellId}/learn`)
         .then((response) => {
@@ -94,6 +96,7 @@ export default {
         });
       await this.getMe();
       await this.getCurrentPlayer();
+      this.spellLoading = false;
     },
   },
 

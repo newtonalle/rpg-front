@@ -34,35 +34,43 @@
             <!-- step 2 -->
             <v-stepper-content step="2">
               <v-container class="battle-container">
-                <v-row
-                  style="height: 33%"
-                  v-for="(monster, index) in currentPreBattle.monster"
-                  :key="`monster-${index}`"
-                >
-                  <v-col cols="4">
+                <v-row style="height: 100%">
+                  <v-col cols="5">
                     <player-card
-                      v-if="index === 1"
+                      style="height: 100%"
                       :player="player"
+                      :showAttributeAdding="false"
                     ></player-card>
                   </v-col>
-                  <v-col @click="confirmMonster" align-self="center" cols="4"
-                    ><v-btn
-                      color="primary"
-                      :disabled="!selectedMonster.id"
-                      v-if="index === 1"
-                      >Choose Monster</v-btn
-                    ></v-col
-                  >
-                  <v-col
-                    cols="4"
-                    v-on:dblclick="confirmMonster"
-                    @click="selectMonster(monster)"
-                  >
-                    <monster-card
-                      style="height: 100%"
-                      :monster="monster"
-                      :cardColor="`${cardSelected(monster)}`"
-                    />
+                  <v-col cols="7">
+                    <v-row
+                      style="height: 33%"
+                      v-for="(monster, index) in currentPreBattle.monster"
+                      :key="`monster-${index}`"
+                    >
+                      <v-col
+                        @click="confirmMonster"
+                        align-self="center"
+                        cols="6"
+                        ><v-btn
+                          color="primary"
+                          :disabled="!selectedMonster.id"
+                          v-if="index === 1"
+                          >Choose Monster</v-btn
+                        ></v-col
+                      >
+                      <v-col
+                        cols="6"
+                        v-on:dblclick="confirmMonster"
+                        @click="selectMonster(monster)"
+                      >
+                        <monster-card
+                          style="height: 100%"
+                          :monster="monster"
+                          :cardColor="`${cardSelected(monster)}`"
+                        />
+                      </v-col>
+                    </v-row>
                   </v-col>
                 </v-row>
               </v-container>

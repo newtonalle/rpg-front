@@ -14,8 +14,8 @@
               block
               :loading="isLoadingKey('hit')"
               :disabled="loading && !isLoadingKey('hit')"
-              >Hit</v-btn
-            >
+              >Hit
+            </v-btn>
           </v-col>
           <v-col cols="6">
             <v-btn

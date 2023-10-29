@@ -31,6 +31,17 @@
           ></v-col
         ></v-row
       >
+      <v-row justify="center">
+        <v-col cols="4"
+          ><v-btn
+            @click="redirectTo('newAccount')"
+            color="primary"
+            block
+            :loading="loading"
+            >Create New Account</v-btn
+          ></v-col
+        ></v-row
+      >
       <v-snackbar v-model="snackbar">
         Incorrect Email/Password
 
@@ -57,8 +68,10 @@ export default {
   }),
 
   methods: {
+    redirectTo(routeName) {
+      this.$router.push({ name: routeName });
+    },
     login() {
-      console.log(this.email, this.password);
       this.loading = true;
       axios
         .post(
